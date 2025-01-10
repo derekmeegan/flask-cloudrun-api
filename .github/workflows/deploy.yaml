@@ -55,12 +55,13 @@ jobs:
             --api=parallax-api \
             --openapi-spec=parallax_spec.yaml \
             --project=${{ env.PROJECT_ID }} \
-            --location=us-central1
+            --backend-auth-service-account='${{ secrets.API_GATEWAY_SA_EMAIL }}'
 
           gcloud api-gateway gateways update parallax-gateway \
             --api=parallax-api \
             --api-config= $API_GATEWAY_CONFIG \
-            --location=us-central1
+            --location=us-central1 \
+            --project=${{ env.PROJECT_ID }}
 
       - name: Extract Docker metadata
         id: meta
