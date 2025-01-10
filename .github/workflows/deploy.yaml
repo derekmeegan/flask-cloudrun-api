@@ -37,13 +37,6 @@ jobs:
           project_id: ${{ env.PROJECT_ID }}
           install_components: 'gcloud'
 
-      # - name: Build Docker image for linux/amd64
-      #   run: |
-      #     docker buildx create --use
-      #     docker buildx build --platform linux/amd64 \
-      #       -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:$GITHUB_SHA \
-      #       --push  --no-cache --progress=plain .
-
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v4
@@ -67,10 +60,3 @@ jobs:
           image: gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:main
           region: ${{ env.REGION }}
           flags: '--no-allow-unauthenticated'
-
-      - name: Remove public access from Cloud Run service
-        run: |
-          gcloud run services remove-iam-policy-binding ${{ env.SERVICE }} \
-            --region ${{ env.REGION }} \
-            --member="allUsers" \
-            --role="roles/run.invoker"
