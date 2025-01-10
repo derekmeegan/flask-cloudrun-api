@@ -59,7 +59,7 @@ jobs:
 
           gcloud api-gateway gateways update parallax-gateway \
             --api=parallax-api \
-            --api-config= $API_GATEWAY_CONFIG \
+            --api-config=$API_GATEWAY_CONFIG \
             --location=us-central1 \
             --project=${{ env.PROJECT_ID }}
 
