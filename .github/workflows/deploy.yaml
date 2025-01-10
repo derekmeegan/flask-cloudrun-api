@@ -6,6 +6,7 @@ on:
       - parallax_spec.yaml  # Trigger only when parallax_spec.yaml changes
       - ./Dockerfile
       - ./.github/workflows/deploy.yaml
+      - main.py
     branches:
       - main  # Adjust to your default branch
 
