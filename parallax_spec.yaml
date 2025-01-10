@@ -10,6 +10,7 @@ produces:
 - application/json
 x-google-backend:
   address: https://crypto-news-crawler-523673860006.us-central1.run.app/  # Replace with your Cloud Run service URL
+  deadline: 180
 paths:
   /crawl:
     get:
