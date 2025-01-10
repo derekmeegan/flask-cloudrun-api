@@ -2,11 +2,6 @@ name: Deploy to Cloud Run
 
 on:
   push:
-    paths:
-      - parallax_spec.yaml  # Trigger only when parallax_spec.yaml changes
-      - ./Dockerfile
-      - ./.github/workflows/deploy.yaml
-      - main.py
     branches:
       - main  # Adjust to your default branch
 
@@ -47,7 +42,7 @@ jobs:
       - name: Set API Gateway Config Name
         id: set-config-name
         run: |
-          echo "API_GATEWAY_CONFIG=crypto-news-config-$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
+          echo "API_GATEWAY_CONFIG=parallax-config-$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
       
       - name: Deploy API Gateway Configuration
         run: |
@@ -57,7 +52,7 @@ jobs:
             --project=${{ env.PROJECT_ID }} \
             --backend-auth-service-account='${{ secrets.API_GATEWAY_SA_EMAIL }}'
 
-          gcloud api-gateway gateways update crypto-news-gateway \
+          gcloud api-gateway gateways update parallax-gateway \
             --api=parallax-api \
             --api-config=$API_GATEWAY_CONFIG \
             --location=us-central1 \
