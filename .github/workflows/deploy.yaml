@@ -9,6 +9,7 @@ env:
   PROJECT_ID: 'hallowed-ridge-447322-d1'
   REGION: 'us-central1'
   SERVICE: 'crypto-news-crawler' 
+  DOCKER_IMAGE_NAME: crypto-news-crawler
 
 jobs:
   deploy:
@@ -36,12 +37,20 @@ jobs:
           project_id: ${{ env.PROJECT_ID }}
           install_components: 'gcloud'
 
-      - name: Build Docker image for linux/amd64
-        run: |
-          docker buildx create --use
-          docker buildx build --platform linux/amd64 \
-            -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:$GITHUB_SHA \
-            --push  --no-cache --progress=plain .
+      # - name: Build Docker image for linux/amd64
+      #   run: |
+      #     docker buildx create --use
+      #     docker buildx build --platform linux/amd64 \
+      #       -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:$GITHUB_SHA \
+      #       --push  --no-cache --progress=plain .
+
+      - name: Build and push Docker image
+        id: push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
 
       - name: Deploy to Cloud Run
         uses: google-github-actions/deploy-cloudrun@v2
