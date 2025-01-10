@@ -2,8 +2,11 @@ name: Deploy to Cloud Run
 
 on:
   push:
+    paths:
+      - parallax_spec.yaml  # Trigger only when parallax_spec.yaml changes
+      - ./Dockerfile
     branches:
-      - main
+      - main  # Adjust to your default branch
 
 env:
   PROJECT_ID: 'hallowed-ridge-447322-d1'
