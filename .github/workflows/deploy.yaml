@@ -64,7 +64,7 @@ jobs:
         uses: google-github-actions/deploy-cloudrun@v2
         with:
           service: ${{ env.SERVICE }}
-          image: gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:$GITHUB_SHA
+          image: gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:main
           region: ${{ env.REGION }}
           flags: '--no-allow-unauthenticated'
 
