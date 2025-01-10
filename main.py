@@ -14,11 +14,15 @@ async def crawl_crypto_news():
         return result.markdown
 
 # Flask route for the HTTP request
-@app.route("/", methods=["GET"])
+@app.route("/crawl", methods=["GET"])
 def crawl():
     # Run the asynchronous function and return the response
     result = asyncio.run(crawl_crypto_news())
     return jsonify({"data": result})
+
+@app.route("/test", methods=["GET"])
+def test():
+    return jsonify({"result": 'hello'})
 
 if __name__ == "__main__":
     # Run the Flask application
