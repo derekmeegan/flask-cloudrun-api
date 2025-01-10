@@ -44,6 +44,12 @@ jobs:
       #       -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:$GITHUB_SHA \
       #       --push  --no-cache --progress=plain .
 
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}
+
       - name: Build and push Docker image
         id: push
         uses: docker/build-push-action@v4
@@ -51,6 +57,8 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
       - name: Deploy to Cloud Run
         uses: google-github-actions/deploy-cloudrun@v2
