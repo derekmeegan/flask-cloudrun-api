@@ -15,7 +15,7 @@ env:
   REGION: 'us-central1'
   SERVICE: 'crypto-news-crawler' 
   DOCKER_IMAGE_NAME: crypto-news-crawler
-  API_GATEWAY_CONFIG: crypto-news-config:$GITHUB_SHA
+  API_GATEWAY_CONFIG: crypto-news-config
 
 jobs:
   deploy:
@@ -48,7 +48,7 @@ jobs:
           gcloud api-gateway api-configs create ${{ env.API_GATEWAY_CONFIG }} \
             --api=parallax-api \
             --openapi-spec=parallax_spec.yaml \
-            --project=${{ env.PROJECT_ID }}} \
+            --project=${{ env.PROJECT_ID }} \
             --location=us-central1
 
           gcloud api-gateway gateways update parallax-gateway \
