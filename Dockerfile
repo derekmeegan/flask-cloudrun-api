@@ -27,3 +27,4 @@ COPY . /app
 
 # Run your script as the container's entrypoint
 CMD ["python", "main.py"]
+
