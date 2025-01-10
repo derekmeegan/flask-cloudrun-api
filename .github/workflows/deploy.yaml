@@ -15,7 +15,7 @@ env:
   REGION: 'us-central1'
   SERVICE: 'crypto-news-crawler' 
   DOCKER_IMAGE_NAME: crypto-news-crawler
-  API_GATEWAY_CONFIG: crypto-news-config
+  API_GATEWAY_CONFIG: "crypto-news-config-$(date +%Y%m%d-%H%M%S)"
 
 jobs:
   deploy:
@@ -42,10 +42,16 @@ jobs:
         with:
           project_id: ${{ env.PROJECT_ID }}
           install_components: 'gcloud'
+
+      # Step 3: Generate a unique API Gateway config name
+      - name: Set API Gateway Config Name
+        id: set-config-name
+        run: |
+          echo "API_GATEWAY_CONFIG=crypto-news-config-$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
       
       - name: Deploy API Gateway Configuration
         run: |
-          gcloud api-gateway api-configs create ${{ env.API_GATEWAY_CONFIG }} \
+          gcloud api-gateway api-configs create $API_GATEWAY_CONFIG \
             --api=parallax-api \
             --openapi-spec=parallax_spec.yaml \
             --project=${{ env.PROJECT_ID }} \
@@ -53,7 +59,7 @@ jobs:
 
           gcloud api-gateway gateways update parallax-gateway \
             --api=parallax-api \
-            --api-config=${{ env.API_GATEWAY_CONFIG }} \
+            --api-config= $API_GATEWAY_CONFIG \
             --location=us-central1
 
       - name: Extract Docker metadata
