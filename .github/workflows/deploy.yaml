@@ -57,7 +57,7 @@ jobs:
             --project=${{ env.PROJECT_ID }} \
             --backend-auth-service-account='${{ secrets.API_GATEWAY_SA_EMAIL }}'
 
-          gcloud api-gateway gateways update parallax-gateway \
+          gcloud api-gateway gateways update crypto-news-gateway \
             --api=parallax-api \
             --api-config=$API_GATEWAY_CONFIG \
             --location=us-central1 \
