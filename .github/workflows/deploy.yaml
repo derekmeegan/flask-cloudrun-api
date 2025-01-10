@@ -5,7 +5,7 @@ on:
     paths:
       - parallax_spec.yaml  # Trigger only when parallax_spec.yaml changes
       - ./Dockerfile
-      - .github/workflows/deploy.yaml
+      - ./.github/workflows/deploy.yaml
     branches:
       - main  # Adjust to your default branch
 
@@ -14,7 +14,7 @@ env:
   REGION: 'us-central1'
   SERVICE: 'crypto-news-crawler' 
   DOCKER_IMAGE_NAME: crypto-news-crawler
-  API_GATEWAY_CONFIG: crypto-news-${GITHUB_SHA:0:8}-config
+  API_GATEWAY_CONFIG: crypto-news-config:$GITHUB_SHA
 
 jobs:
   deploy:
