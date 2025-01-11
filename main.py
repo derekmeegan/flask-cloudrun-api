@@ -16,7 +16,6 @@ def parse_x_url(url):
 
 app = Flask(__name__)
 
-# Define the asynchronous crawling logic
 async def crawl_crypto_news():
     async with AsyncWebCrawler() as crawler:
         result = await crawler.arun(
@@ -24,21 +23,17 @@ async def crawl_crypto_news():
         )
         return result.markdown
 
-# Flask route for the HTTP request
 @app.route("/crawl", methods=["GET"])
 def crawl():
-    # Run the asynchronous function and return the response
     result = asyncio.run(crawl_crypto_news())
     return jsonify({"data": result})
 
 @app.route("/message_creator", methods=['POST', 'GET'])
 def message_creator():
-    # Check for 'message' in query string
     message = request.args.get('message')
     
-    # If not found in query string, check in the request body
     if not message:
-        if request.is_json:  # Check if the request body is JSON
+        if request.is_json: 
             data = request.get_json()
             message = data.get('message') if data else None
     
@@ -58,7 +53,6 @@ def twilio_webhook():
     sender = data.get('From')
     content = data.get('Body').strip()
 
-    # # Verify the message is from your number
     if sender == '+16615930925':
         username, post_id = parse_x_url(content)
         print(username)
@@ -76,5 +70,4 @@ def twilio_webhook():
     return "Invalid sender or content.", 400
 
 if __name__ == "__main__":
-    # Run the Flask application
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
