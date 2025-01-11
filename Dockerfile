@@ -5,9 +5,9 @@ FROM python:3.9-slim
 ENV PYTHONUNBUFFERED=1
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    wget=1.20.3-1ubuntu1 \
-    curl=7.68.0-1ubuntu2.13 \
+RUN apt-get update && apt-get install -y \
+    wget \
+    curl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -27,4 +27,3 @@ COPY . /app
 
 # Run your script as the container's entrypoint
 CMD ["python", "main.py"]
-
