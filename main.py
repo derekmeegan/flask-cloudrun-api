@@ -42,6 +42,28 @@ def message_creator():
 def test():
     return jsonify({"result": 'hello'})
 
+@app.route("/log_x_post", methods=["POST"])
+def webhook():
+    # Get data from Twilio's webhook
+    print(request.form)
+
+    # # Verify the message is from your number
+    # if sender == MY_PHONE_NUMBER:
+    #     # Forward the message to the API
+    #     response = requests.post(
+    #         FORWARDING_API_URL,
+    #         json={"message": message_body},
+    #         headers={"Authorization": f"Bearer {FORWARDING_API_KEY}"}
+    #     )
+    #     if response.status_code == 200:
+    #         return jsonify({"status": "success"}), 200
+    #     else:
+    #         return jsonify({"status": "error", "details": response.text}), 500
+
+    # # Ignore messages from other numbers
+    # return jsonify({"status": "ignored"}), 403
+    return jsonify({"status": "success"}), 200
+
 if __name__ == "__main__":
     # Run the Flask application
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
