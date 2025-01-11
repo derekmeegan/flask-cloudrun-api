@@ -23,23 +23,28 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for push events and enough for PRs
 
-      - name: Check for OpenAPI spec changes
-        id: api-spec-changed
+      - name: Determine changes
+        id: determine-changes
         run: |
-          if git diff --quiet HEAD^ HEAD -- parallax_spec.yaml; then
-            echo "apichanged=false" >> $GITHUB_ENV
-          else
-            echo "apichanged=true" >> $GITHUB_ENV
-          fi
-      
-      - name: Check for Docker image changes
-        id: docker-changed
-        run: |
-          if git diff --quiet HEAD^ HEAD -- Dockerfile src/; then
-            echo "dockerchanged=false" >> $GITHUB_ENV
-          else
+          # Get the list of changed files in this push
+          changes=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }})
+          echo "$changes" > changes.log
+
+          # Check for Docker changes
+          if echo "$changes" | grep -E '(^Dockerfile|^src/)'; then
             echo "dockerchanged=true" >> $GITHUB_ENV
+          else
+            echo "dockerchanged=false" >> $GITHUB_ENV
+          fi
+
+          # Check for API spec changes
+          if echo "$changes" | grep -E '(^parallax_spec.yaml)'; then
+            echo "apichanged=true" >> $GITHUB_ENV
+          else
+            echo "apichanged=false" >> $GITHUB_ENV
           fi
 
       - name: Authenticate to Google Cloud
