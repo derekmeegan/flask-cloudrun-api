@@ -30,7 +30,8 @@ jobs:
           if git diff --quiet HEAD^ HEAD -- parallax_spec.yaml; then
             echo "apichanged=false" >> $GITHUB_ENV
           else
-            echo "apichanged=true" >> $GITHUB_EN
+            echo "apichanged=true" >> $GITHUB_ENV
+          fi
       
       - name: Check for Docker image changes
         id: docker-changed
@@ -39,6 +40,7 @@ jobs:
             echo "dockerchanged=false" >> $GITHUB_ENV
           else
             echo "dockerchanged=true" >> $GITHUB_ENV
+          fi
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
