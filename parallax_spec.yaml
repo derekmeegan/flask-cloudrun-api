@@ -47,7 +47,28 @@ paths:
             properties:
               result:
                 type: string
-                example: hello
+        '500':
+          description: Internal server error
+          schema:
+            type: string
+  /message_creator:
+    get:
+      summary: Send a message to creator
+      operationId: testService
+      security:
+        - api_key: []
+      responses:
+        '200':
+          description: A successful response
+          schema:
+            type: object
+            properties:
+              result:
+                type: string
+        '500':
+          description: Internal server error
+          schema:
+            type: string
 securityDefinitions:
   api_key:
     type: apiKey

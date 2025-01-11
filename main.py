@@ -20,6 +20,22 @@ def crawl():
     result = asyncio.run(crawl_crypto_news())
     return jsonify({"data": result})
 
+@app.route("/message_creator", methods=['POST', 'GET'])
+def message_creator():
+    # Check for 'message' in query string
+    message = request.args.get('message')
+    
+    # If not found in query string, check in the request body
+    if not message:
+        if request.is_json:  # Check if the request body is JSON
+            data = request.get_json()
+            message = data.get('message') if data else None
+    
+    if message:
+        # Print the message to the console
+        print(f"Message received: {message}")
+        return "Your messaged was received by your creator."
+
 @app.route("/test", methods=["GET"])
 def test():
     return jsonify({"result": 'hello'})
