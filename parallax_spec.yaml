@@ -70,7 +70,7 @@ paths:
           schema:
             type: string
   /log_x_post:
-    get:
+    post:
         summary: Saves X Posts Sent to API
         operationId: xPostLogger
         security:
