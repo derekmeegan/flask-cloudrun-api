@@ -54,7 +54,7 @@ paths:
   /message_creator:
     get:
       summary: Send a message to creator
-      operationId: testService
+      operationId: messageService
       security:
         - api_key: []
       responses:
