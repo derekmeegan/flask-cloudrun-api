@@ -1,3 +1,4 @@
 crawl4ai==0.4.247
 functions-framework==3.*
 flask==3.1
+google-cloud-pubsub==2.27.2

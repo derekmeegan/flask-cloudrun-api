@@ -1,7 +1,18 @@
+import re
 import os
 import asyncio
 from crawl4ai import AsyncWebCrawler
 from flask import Flask, request, jsonify
+from google.cloud import pubsub_v1
+
+def parse_x_url(url):
+    pattern = r"https:\/\/x\.com\/(?P<username>[\w]+)\/status\/(?P<id>\d+)"
+    match = re.search(pattern, url)
+    if match:
+        username = match.group("username")
+        id = match.group("id")
+        return username, id
+    return None, None
 
 app = Flask(__name__)
 
@@ -43,26 +54,25 @@ def test():
     return jsonify({"result": 'hello'})
 
 @app.route("/log_x_post", methods=["POST"])
-def webhook():
-    # Get data from Twilio's webhook
-    print(request.form)
+def twilio_webhook():
+    data = request.form
+    sender = data.get('From')
+    content = data.get('Body').strip()
 
     # # Verify the message is from your number
-    # if sender == MY_PHONE_NUMBER:
-    #     # Forward the message to the API
-    #     response = requests.post(
-    #         FORWARDING_API_URL,
-    #         json={"message": message_body},
-    #         headers={"Authorization": f"Bearer {FORWARDING_API_KEY}"}
-    #     )
-    #     if response.status_code == 200:
-    #         return jsonify({"status": "success"}), 200
-    #     else:
-    #         return jsonify({"status": "error", "details": response.text}), 500
-
-    # # Ignore messages from other numbers
-    # return jsonify({"status": "ignored"}), 403
-    return jsonify({"status": "success"}), 200
+    if sender == '+6615930925':
+        username, post_id = parse_x_url(content)
+        if username and post_id:
+            publisher = pubsub_v1.PublisherClient()
+            topic_path = publisher.topic_path('hallowed-ridge-447322-d1', 'x-post-lookup')
+            
+            message = {
+                "username": username,
+                "post_id": post_id,
+            }
+            publisher.publish(topic_path, data=str(message).encode('utf-8'))
+            return f"Post from {username} with ID {post_id} logged.", 200
+    return "Invalid sender or content.", 400
 
 if __name__ == "__main__":
     # Run the Flask application

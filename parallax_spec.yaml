@@ -83,6 +83,10 @@ paths:
               properties:
                 result:
                   type: string
+          '400':
+            description: Invalid Response
+            schema:
+              type: string
 securityDefinitions:
   api_key:
     type: apiKey
