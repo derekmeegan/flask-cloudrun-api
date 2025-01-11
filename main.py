@@ -58,12 +58,9 @@ def twilio_webhook():
     data = request.form
     sender = data.get('From')
     content = data.get('Body').strip()
-    print(content)
-    print(sender)
-    print(sender == '+6615930925')
 
     # # Verify the message is from your number
-    if sender == '+6615930925':
+    if sender == '+16615930925':
         username, post_id = parse_x_url(content)
         print(username)
         print(post_id)
