@@ -43,11 +43,10 @@ def message_creator():
             message = data.get('message') if data else None
     
     if message:
-        # Print the message to the console
         print(f"Message received: {message}")
-        return "Your messaged was received by your creator."
-    else:
-        print('No message was provided by caller')
+        return "Your messaged was received by your creator.", 200
+
+    return 'No message was provided in query string.', 400
 
 @app.route("/test", methods=["GET"])
 def test():

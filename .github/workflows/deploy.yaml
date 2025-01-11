@@ -24,6 +24,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Check for OpenAPI spec changes
+        id: api-spec-changed
+        run: |
+          if git diff --quiet HEAD^ HEAD -- parallax_spec.yaml; then
+            echo "apichanged=false" >> $GITHUB_ENV
+          else
+            echo "apichanged=true" >> $GITHUB_EN
+      
+      - name: Check for Docker image changes
+        id: docker-changed
+        run: |
+          if git diff --quiet HEAD^ HEAD -- Dockerfile src/; then
+            echo "dockerchanged=false" >> $GITHUB_ENV
+          else
+            echo "dockerchanged=true" >> $GITHUB_ENV
+
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
@@ -45,6 +61,7 @@ jobs:
           echo "API_GATEWAY_CONFIG=parallax-config-$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
       
       - name: Deploy API Gateway Configuration
+        if: env.apichanged == 'true'
         run: |
           gcloud api-gateway api-configs create $API_GATEWAY_CONFIG \
             --api=parallax-api \
@@ -65,6 +82,7 @@ jobs:
           images: gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}
 
       - name: Build and push Docker image
+        if: env.dockerchanged == 'true'
         id: push
         uses: docker/build-push-action@v4
         with:
@@ -75,6 +93,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Deploy to Cloud Run
+        if: steps.push.outputs.image != ''
         uses: google-github-actions/deploy-cloudrun@v2
         with:
           service: ${{ env.SERVICE }}
