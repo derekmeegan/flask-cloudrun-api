@@ -35,6 +35,8 @@ def message_creator():
         # Print the message to the console
         print(f"Message received: {message}")
         return "Your messaged was received by your creator."
+    else:
+        print('No message was provided by caller')
 
 @app.route("/test", methods=["GET"])
 def test():
