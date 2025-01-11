@@ -58,10 +58,15 @@ def twilio_webhook():
     data = request.form
     sender = data.get('From')
     content = data.get('Body').strip()
+    print(content)
+    print(sender)
+    print(sender == '+6615930925')
 
     # # Verify the message is from your number
     if sender == '+6615930925':
         username, post_id = parse_x_url(content)
+        print(username)
+        print(post_id)
         if username and post_id:
             publisher = pubsub_v1.PublisherClient()
             topic_path = publisher.topic_path('hallowed-ridge-447322-d1', 'x-post-lookup')
