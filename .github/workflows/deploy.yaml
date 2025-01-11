@@ -33,13 +33,6 @@ jobs:
           changes=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }})
           echo "$changes" > changes.log
 
-          # Check for Docker changes
-          if echo "$changes" | grep -E '(^Dockerfile|^src/)'; then
-            echo "dockerchanged=true" >> $GITHUB_ENV
-          else
-            echo "dockerchanged=false" >> $GITHUB_ENV
-          fi
-
           # Check for API spec changes
           if echo "$changes" | grep -E '(^parallax_spec.yaml)'; then
             echo "apichanged=true" >> $GITHUB_ENV
@@ -88,8 +81,15 @@ jobs:
         with:
           images: gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}
 
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-docker-${{ github.ref }}
+          restore-keys: |
+            ${{ runner.os }}-docker-
+
       - name: Build and push Docker image
-        if: env.dockerchanged == 'true'
         id: push
         uses: docker/build-push-action@v4
         with:
@@ -98,6 +98,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
 
       - name: Deploy to Cloud Run
         if: steps.push.outputs.image != ''
