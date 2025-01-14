@@ -23,10 +23,25 @@ async def crawl_crypto_news():
         )
         return result.markdown
 
+async def crawl_arbitrary_website(url):
+    async with AsyncWebCrawler() as crawler:
+        result = await crawler.arun(
+            url=url,
+        )
+        return result.markdown
+
 @app.route("/crawl", methods=["GET"])
-def crawl():
+def crawl_crypto_news():
     result = asyncio.run(crawl_crypto_news())
     return jsonify({"data": result})
+
+@app.route("/crawl_website", methods=["GET"])
+def crawl_arbitrary_website():
+    url = request.args.get('url')
+    if url:
+        result = asyncio.run(crawl_arbitrary_website(url))
+        return jsonify({"data": result})
+    return 'No URL provided', 400
 
 @app.route("/message_creator", methods=['POST', 'GET'])
 def message_creator():

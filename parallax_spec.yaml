@@ -32,6 +32,26 @@ paths:
           description: Internal server error
           schema:
             type: string
+  /crawl_website:
+    get:
+      summary: Crawl any website provided
+      description: Asynchronously crawls the url provided
+      operationId: crawlWebsite
+      security:
+        - api_key: []
+      responses:
+        '200':
+          description: A successful response
+          schema:
+            type: object
+            properties:
+              data:
+                type: string
+                description: The crawled data in markdown format
+        '500':
+          description: Internal server error
+          schema:
+            type: string
   /test:
     get:
       summary: Test the service
